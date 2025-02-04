@@ -1,14 +1,18 @@
 import { GeistSans } from "geist/font/sans";
 import { type AppType } from "next/app";
-import Sidebar from "~/components/Sidebar";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "~/styles/globals.css";
 
+const queryClinet = new QueryClient();
+
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <div className={GeistSans.className}>
-      <Component {...pageProps} />
-    </div>
+    <QueryClientProvider client={queryClinet}>
+      <div className={GeistSans.className}>
+        <Component {...pageProps} />
+      </div>
+    </QueryClientProvider>
   );
 };
 

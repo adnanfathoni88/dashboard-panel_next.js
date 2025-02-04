@@ -1,0 +1,368 @@
+{
+  "banner": [
+    {
+      "id": "1",
+      "title": "banner 1",
+      "image": "/images/banner/banner-1.png"
+    },
+    {
+      "id": "2",
+      "title": "banner 2",
+      "image": "/images/banner/banner-2.png"
+    },
+    {
+      "id": "3",
+      "title": "banner 3",
+      "image": "/images/banner/banner-3.png"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "kamera",
+      "description": "Berbagai pilihan kamera untuk mendukung kebutuhan foto/video Anda.",
+      "image": "/images/category/camera.avif"
+    },
+    {
+      "id": "2",
+      "name": "prasmanan",
+      "description": "Berbagai pilihan paket prasmanan untuk melengkapi acara spesial Anda.",
+      "image": "/images/category/catering.avif"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "Canon EOS R5",
+      "description": "Kamera Mirrorless Canon EOS R5 Body Only lorem ipsum dolor sit amet",
+      "stock": 10,
+      "category": {
+        "id": "1",
+        "name": "kamera",
+        "description": "Kami menyediakan berbagai macam produk yang dapat Anda sewa untuk mendukung kebutuhan foto, video, dan acara Anda."
+      },
+      "cheapVariant": {
+        "id": "5",
+        "name": "6 JAM",
+        "price": 15000
+      },
+      "isFeatured": 0,
+      "sold": 8,
+      "image": "/images/product/camera/canon-eos-r5.png",
+      "imageList": [
+        "/images/product/canon-eos-r5/camera-1.png",
+        "/images/product/canon-eos-r5/camera-2.png",
+        "/images/product/canon-eos-r5/camera-3.png"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Canon EOS R6",
+      "description": "Kamera Mirrorless Canon EOS R6 Body Only lorem ipsum dolor sit amet",
+      "stock": 10,
+      "category": {
+        "id": "1",
+        "name": "kamera",
+        "description": "Kami menyediakan berbagai macam produk yang dapat Anda sewa untuk mendukung kebutuhan foto, video, dan acara Anda."
+      },
+      "cheapVariant": {
+        "id": "5",
+        "name": "6 JAM",
+        "price": 15000
+      },
+      "isFeatured": 1,
+      "sold": 7,
+      "image": "/images/product/camera/canon-eos-r6.png",
+      "imageList": [
+        "/images/product/canon-eos-r6/camera-1.png",
+        "/images/product/canon-eos-r6/camera-2.png",
+        "/images/product/canon-eos-r6/camera-3.png"
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Canon EOS 5D Mark V",
+      "description": "Kamera Mirrorless Canon EOS R6 Body Only lorem ipsum dolor sit amet",
+      "stock": 10,
+      "category": {
+        "id": "1",
+        "name": "kamera",
+        "description": "Kami menyediakan berbagai macam produk yang dapat Anda sewa untuk mendukung kebutuhan foto, video, dan acara Anda."
+      },
+      "cheapVariant": {
+        "id": "5",
+        "name": "6 JAM",
+        "price": 15000
+      },
+      "isFeatured": 1,
+      "sold": 11,
+      "image": "/images/product/camera/canon-eos-5d-mark-iv.png",
+      "imageList": [
+        "/images/product/canon-eos-5d-mark-iv/camera-1.png",
+        "/images/product/canon-eos-5d-mark-iv/camera-2.png",
+        "/images/product/canon-eos-5d-mark-iv/camera-3.png"
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Canon EOS 5D Mark IV",
+      "description": "Kamera Mirrorless Canon EOS R6 Body Only lorem ipsum dolor sit amet",
+      "stock": 10,
+      "category": {
+        "id": "1",
+        "name": "kamera",
+        "description": "Kami menyediakan berbagai macam produk yang dapat Anda sewa untuk mendukung kebutuhan foto, video, dan acara Anda."
+      },
+      "cheapVariant": {
+        "id": "5",
+        "name": "6 JAM",
+        "price": 15000
+      },
+      "isFeatured": 1,
+      "sold": 11,
+      "image": "/images/product/camera/canon-eos-5d-mark-iv.png",
+      "imageList": [
+        "/images/product/canon-eos-5d-mark-iv/camera-1.png",
+        "/images/product/canon-eos-5d-mark-iv/camera-2.png",
+        "/images/product/canon-eos-5d-mark-iv/camera-3.png"
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Canon EOS 5D Mark VI",
+      "description": "Kamera Mirrorless Canon EOS R6 Body Only lorem ipsum dolor sit amet",
+      "stock": 10,
+      "category": {
+        "id": "1",
+        "name": "kamera",
+        "description": "Kami menyediakan berbagai macam produk yang dapat Anda sewa untuk mendukung kebutuhan foto, video, dan acara Anda."
+      },
+      "cheapVariant": {
+        "id": "5",
+        "name": "6 JAM",
+        "price": 15000
+      },
+      "isFeatured": 1,
+      "sold": 11,
+      "image": "/images/product/camera/canon-eos-5d-mark-iv.png",
+      "imageList": [
+        "/images/product/canon-eos-5d-mark-iv/camera-1.png",
+        "/images/product/canon-eos-5d-mark-iv/camera-2.png",
+        "/images/product/canon-eos-5d-mark-iv/camera-3.png"
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Kipas Embun",
+      "description": "Kipas Embun untuk acara outdoor",
+      "stock": 4,
+      "category": {
+        "id": "2",
+        "name": "prasmanan",
+        "description": "Kami menyediakan berbagai macam produk yang dapat Anda sewa untuk melengkapi acara spesial Anda."
+      },
+      "cheapVariant": {
+        "id": "9",
+        "name": "12 JAM",
+        "price": 10000
+      },
+      "isFeatured": 1,
+      "sold": 4,
+      "image": "/images/product/prasmanan/kipas-embun.png",
+      "imageList": []
+    }
+  ],
+  "variations": [
+    {
+      "id": "3",
+      "productId": 1,
+      "name": "12 JAM",
+      "price": 25000
+    },
+    {
+      "id": "4",
+      "productId": 1,
+      "name": "24 JAM",
+      "price": 40000
+    },
+    {
+      "id": "5",
+      "productId": 1,
+      "name": "6 JAM",
+      "price": 15000
+    },
+    {
+      "id": "6",
+      "productId": 3,
+      "name": "48 JAM",
+      "price": 60000
+    },
+    {
+      "id": "7",
+      "productId": 4,
+      "name": "1 MINGGU",
+      "price": 150000
+    },
+    {
+      "id": "8",
+      "productId": 4,
+      "name": "1 BULAN",
+      "price": 500000
+    },
+    {
+      "id": "9",
+      "productId": 5,
+      "name": "12 JAM",
+      "price": 10000
+    },
+    {
+      "id": "10",
+      "productId": 5,
+      "name": "24 JAM",
+      "price": 15000
+    }
+  ],
+  "reviews": [
+    {
+      "id": "10",
+      "productId": 1,
+      "name": "Lorem",
+      "review": "Great camera, I love it!",
+      "rating": 4,
+      "date": "2022-01-01"
+    },
+    {
+      "id": "11",
+      "productId": 1,
+      "name": "Lorem",
+      "review": "Great camera, I love it!",
+      "rating": 5,
+      "date": "2022-01-01"
+    },
+    {
+      "id": "1",
+      "productId": 1,
+      "name": "John Doe",
+      "review": "Great camera, I love it!",
+      "rating": 3,
+      "date": "2021-01-01"
+    },
+    {
+      "id": "19",
+      "productId": 1,
+      "name": "John Doe",
+      "review": "Nice bro! I love it! Great camera, I love it! it can be better if it has a better battery life",
+      "rating": 5,
+      "date": "2021-01-01"
+    },
+    {
+      "id": "2",
+      "productId": 2,
+      "name": "Alice Smith",
+      "review": "The camera quality is amazing, but it's a bit heavy.",
+      "rating": 4,
+      "date": "2021-01-02"
+    },
+    {
+      "id": "3",
+      "productId": 1,
+      "name": "Bob Johnson",
+      "review": "Not worth the price. The images are blurry.",
+      "rating": 2,
+      "date": "2021-01-03"
+    },
+    {
+      "id": "4",
+      "productId": 1,
+      "name": "Eve Adams",
+      "review": "Perfect for vlogging! The stabilization is excellent.",
+      "rating": 5,
+      "date": "2021-01-04"
+    },
+    {
+      "id": "5",
+      "productId": 5,
+      "name": "Charlie Brown",
+      "review": "Decent camera, but the battery life could be better.",
+      "rating": 3,
+      "date": "2021-01-05"
+    },
+    {
+      "id": "6",
+      "productId": 6,
+      "name": "David Lee",
+      "review": "Fantastic product! It has all the features I need for professional photography.",
+      "rating": 5,
+      "date": "2021-01-06"
+    },
+    {
+      "id": "7",
+      "productId": 7,
+      "name": "Grace King",
+      "review": "Good value for money. It’s easy to use, even for beginners.",
+      "rating": 4,
+      "date": "2021-01-07"
+    },
+    {
+      "id": "8",
+      "productId": 8,
+      "name": "Hannah Green",
+      "review": "The camera works well in low light, but I expected more for the price.",
+      "rating": 3,
+      "date": "2021-01-08"
+    },
+    {
+      "id": "9",
+      "productId": 9,
+      "name": "Oliver Miller",
+      "review": "Excellent build quality and fast autofocus. Perfect for fast-paced photography.",
+      "rating": 5
+    },
+    {
+      "id": "10",
+      "productId": 10,
+      "name": "Sophia Wilson",
+      "review": "The lens is great, but the camera body feels a bit cheap.",
+      "rating": 3,
+      "date": "2021-01-10"
+    }
+  ],
+  "carts": [
+    {
+      "id": "c3305bac-86b4-4e5b-a35e-c894d7695064",
+      "quantity": 1,
+      "subTotal": 150000,
+      "userId": "e51b23d9-75ee-45ce-9124-f31da2e044be",
+      "variation": {
+        "id": "7",
+        "productId": 4,
+        "name": "1 MINGGU",
+        "price": 150000
+      },
+      "product": {
+        "id": "4",
+        "name": "Canon EOS 5D Mark IV",
+        "description": "Kamera Mirrorless Canon EOS R6 Body Only lorem ipsum dolor sit amet",
+        "stock": 10,
+        "category": {
+          "id": "1",
+          "name": "kamera",
+          "description": "Kami menyediakan berbagai macam produk yang dapat Anda sewa untuk mendukung kebutuhan foto, video, dan acara Anda."
+        },
+        "cheapVariant": {
+          "id": "5",
+          "name": "6 JAM",
+          "price": 15000
+        },
+        "isFeatured": 1,
+        "sold": 11,
+        "image": "/images/product/camera/canon-eos-5d-mark-iv.png",
+        "imageList": [
+          "/images/product/canon-eos-5d-mark-iv/camera-1.png",
+          "/images/product/canon-eos-5d-mark-iv/camera-2.png",
+          "/images/product/canon-eos-5d-mark-iv/camera-3.png"
+        ]
+      }
+    }
+  ]
+}
