@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Layout from "~/components/Layout";
 import { LuPencil } from "react-icons/lu";
@@ -9,6 +9,8 @@ import { FaRegTrashAlt } from "react-icons/fa";
 // hooks
 import { useProducts } from "~/hooks/useProducts";
 import ModalAddProduct from "~/components/product/ModalAddProduct";
+import Toast from "~/components/global/Toast";
+import { useToastStore } from "~/store/toast";
 
 const Product = () => {
   const {
@@ -17,6 +19,10 @@ const Product = () => {
     error: isProductsError,
   } = useProducts();
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
+  // const [isToastVisible, setIsToastVisible] = useState(false);
+  const { isToastVisible, setIsToastVisible } = useToastStore();
+
+  console.log(isToastVisible);
 
   // is loading
   if (isProductsLoading) {
@@ -43,6 +49,13 @@ const Product = () => {
     setIsModalAddOpen(false);
   };
 
+  // handle toast
+  const handleToast = () => {
+    setIsToastVisible(true);
+  };
+
+  console.log(isToastVisible);
+
   return (
     <>
       <Layout>
@@ -50,15 +63,25 @@ const Product = () => {
           isModalAddOpen={isModalAddOpen}
           closeModal={closeModal}
         />
+
         <div className="h-screen pt-10">
-          <div className="flex items-center justify-between">
-            <h1 className="py-8 text-3xl font-semibold">Product</h1>
+          <div className="flex items-center justify-between pb-8">
+            <h1 className="text-3xl font-semibold">Product</h1>
+
             <button
               onClick={openModal}
               className="rounded bg-blue-600 px-8 py-2 font-bold text-white hover:bg-blue-700"
             >
               Add
             </button>
+
+            {/* testing toast */}
+            <Toast
+              isToastVisible={isToastVisible}
+              setIsToastVisible={setIsToastVisible}
+              type="success"
+              message="Data Sudah Masuk"
+            />
           </div>
           <div className="rounded-md bg-white p-8 shadow-sm">
             <table className="mt-6 w-full rounded-xl">
