@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import Layout from "~/components/Layout";
 import { LuPencil } from "react-icons/lu";
@@ -9,8 +9,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 // hooks
 import { useProducts } from "~/hooks/useProducts";
 import ModalAddProduct from "~/components/product/ModalAddProduct";
-import Toast from "~/components/global/Toast";
-import { useToastStore } from "~/store/toast";
+import ModalEditProduct from "~/components/product/ModalEditProduct";
 
 const Product = () => {
   const {
@@ -19,10 +18,8 @@ const Product = () => {
     error: isProductsError,
   } = useProducts();
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
-  // const [isToastVisible, setIsToastVisible] = useState(false);
-  const { isToastVisible, setIsToastVisible } = useToastStore();
-
-  console.log(isToastVisible);
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState("");
 
   // is loading
   if (isProductsLoading) {
@@ -40,48 +37,47 @@ const Product = () => {
     return <p className="text-red-500">{isProductsError.message}</p>;
 
   // open modal
-  const openModal = () => {
-    setIsModalAddOpen(true);
-  };
+  // const openModal = () => {
+  //   setIsModalAddOpen(true);
+  // };
 
   // close modal
   const closeModal = () => {
-    setIsModalAddOpen(false);
+    // setIsModalAddOpen(false);
+    setIsModalEditOpen(false);
   };
 
-  // handle toast
-  const handleToast = () => {
-    setIsToastVisible(true);
+  // modal edit
+  const handleModalEdit = (productId: string) => {
+    setIsModalEditOpen(true);
+    setSelectedProductId(productId);
   };
-
-  console.log(isToastVisible);
 
   return (
     <>
       <Layout>
-        <ModalAddProduct
-          isModalAddOpen={isModalAddOpen}
+
+        <ModalEditProduct
+          isModalEditOpen={isModalEditOpen}
           closeModal={closeModal}
+          produkId={selectedProductId}
         />
+
 
         <div className="h-screen pt-10">
           <div className="flex items-center justify-between pb-8">
             <h1 className="text-3xl font-semibold">Product</h1>
 
-            <button
+            <ModalAddProduct
+            // isModalAddOpen={isModalAddOpen}
+            // closeModal={closeModal}
+            />
+            {/* <button
               onClick={openModal}
               className="rounded bg-blue-600 px-8 py-2 font-bold text-white hover:bg-blue-700"
             >
               Add
-            </button>
-
-            {/* testing toast */}
-            <Toast
-              isToastVisible={isToastVisible}
-              setIsToastVisible={setIsToastVisible}
-              type="success"
-              message="Data Sudah Masuk"
-            />
+            </button> */}
           </div>
           <div className="rounded-md bg-white p-8 shadow-sm">
             <table className="mt-6 w-full rounded-xl">
@@ -114,7 +110,7 @@ const Product = () => {
                       {product.stock}
                     </td>
                     <td className="flex gap-2 border-b border-gray-300 px-2 py-4">
-                      <button className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
+                      <button onClick={() => handleModalEdit(String(product.id))} className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
                         <LuPencil />
                       </button>
                       <button className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">

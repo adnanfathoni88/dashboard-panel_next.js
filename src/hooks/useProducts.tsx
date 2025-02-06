@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getProducts, addProduct } from "~/api/products";
+import { getProducts, getProductById, addProduct, updateProduct } from "~/api/products";
+import { type Product } from "~/types/products";
 
 // get products
 export const useProducts = () => {
@@ -8,6 +9,14 @@ export const useProducts = () => {
     queryFn: getProducts,
   });
 };
+
+// get product by id
+export const useProductById = (id: string) => {
+  return useQuery({
+    queryKey: ["products", id],
+    queryFn: () => getProductById(id),
+  });
+}
 
 // add product
 export const useAddProducts = () => {
@@ -23,3 +32,18 @@ export const useAddProducts = () => {
     },
   });
 };
+
+// update product
+export const useUpdateProduct = (id: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (product: Product) => updateProduct({ productId: id, product }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  })
+}
