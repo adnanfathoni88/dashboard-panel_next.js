@@ -1,44 +1,17 @@
 "use client";
 
-import React from "react";
-import { ReactDOM } from "react";
-import { useState } from "react";
+import React, { use } from "react";
+import { useState, useEffect } from "react";
 import Layout from "~/components/Layout";
-import { LuPencil } from "react-icons/lu";
+import { LuEye, LuPencil } from "react-icons/lu";
 import { FaRegTrashAlt } from "react-icons/fa";
 
 // hooks
-import { useProducts } from "~/hooks/useProducts";
+import { useProducts, useDeleteProduct } from "~/hooks/useProducts";
 import ModalAddProduct from "~/components/product/ModalAddProduct";
 import ModalEditProduct from "~/components/product/ModalEditProduct";
-
-// table
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
-
-const columnHelper = createColumnHelper();
-
-const columns = [
-
-  columnHelper.accessor('id', {
-    cell: (info) => info.row.index + 1,
-    footer: 'Total',
-  }),
-
-  columnHelper.accessor('name', {
-    header: 'Name',
-  }),
-
-  columnHelper.accessor('stock', {
-    header: 'Stock',
-  }),
-];
-
+import ModalDeleteProduct from "~/components/product/ModalDeleteProduct";
+import ModalViewProduct from "~/components/product/ModalViewProduct";
 
 const Product = () => {
   const {
@@ -46,24 +19,118 @@ const Product = () => {
     isLoading: isProductsLoading,
     error: isProductsError,
   } = useProducts();
+
+  // modal
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
   const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+  const [isModalViewOpen, setIsModalViewOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
 
-  // table
-  const [sorting, setSorting] = useState([]);
+  // notif
+  const [notifDanger, setNotifDanger] = useState(false);
+  const [notifEdit, setNotifEdit] = useState(false);
+  const [notifAdd, setNotifAdd] = useState(false);
+
+  // bulk delete
+  const [selectedBulkDelete, setSelectedBulkDelete] = useState<string[]>([]);
+
+  // mutate 
+  const { mutate: deleteProduct } = useDeleteProduct();
+
+  // alert timer
+  useEffect(() => {
+    if (notifDanger || notifEdit || notifAdd) {
+      const timer = setTimeout(() => {
+        setNotifDanger(false);
+        setNotifEdit(false);
+        setNotifAdd(false);
+      }, 4000);
+
+      return () => clearTimeout(timer); // Cleanup the timer on unmount
+    }
+  }, [notifDanger, notifEdit, notifAdd]);
 
 
-  const table = useReactTable({
-    data: products || [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting, // Tambahkan state sorting
-    },
-    onSortingChange: setSorting, // Atur sorting berdasarkan perubahan
-  });
+  // open modal
+  // const openModal = () => {
+  //   setIsModalAddOpen(true);
+  // };
+
+  // close modal
+  const closeModal = () => {
+    // setIsModalAddOpen(false);
+    setIsModalEditOpen(false);
+    setIsModalDeleteOpen(false);
+    setIsModalViewOpen(false);
+  };
+
+  // modal edit
+  const handleModalEdit = (productId: string) => {
+    setIsModalEditOpen(true);
+    setSelectedProductId(productId);
+  };
+
+  // modal delete
+  const handleDeleteSEdit = (productId: string) => {
+    setIsModalDeleteOpen(true);
+    setSelectedProductId(productId);
+  };
+
+  // modal view
+  const handleModalView = (productId: string) => {
+    setIsModalViewOpen(true);
+    setSelectedProductId(productId);
+  };
+
+  // handleBulkInput
+  const handleBulkInput = (productId: string) => {
+    setSelectedBulkDelete((prev) => {
+      if (prev.includes(productId)) {
+        return prev.filter((id) => id !== productId);
+      } else {
+        return [...prev, productId];
+      }
+    });
+  };
+
+  // handleBulkSelected
+  const handleBulkSelected = (productIds: string[]) => {
+
+    try {
+      productIds.forEach((productId) => {
+        const isFound = products?.find((product) => product.id === productId);
+        if (isFound) {
+
+          try {
+            deleteProduct(productId);
+            setNotifDanger(true);
+          } catch (error) {
+            console.error("Failed to delete product:", error);
+            alert("Failed to delete product. Please try again.");
+            setNotifDanger(false);
+          }
+        } else {
+          console.error("Product not found:", productId);
+        }
+        if (!isFound) {
+          throw new Error("Product not found");
+        }
+      });
+    }
+    catch (error) {
+      console.error(error);
+      return;
+    }
+    finally {
+      setSelectedBulkDelete([]); // Clear the selected IDs after deletion
+    }
+  };
+
+  // is error
+  if (isProductsError instanceof Error)
+    return <p className="text-red-500">{isProductsError.message}</p>;
+
 
   // is loading
   if (isProductsLoading) {
@@ -76,21 +143,6 @@ const Product = () => {
     );
   }
 
-  // is error
-  if (isProductsError instanceof Error)
-    return <p className="text-red-500">{isProductsError.message}</p>;
-
-  const closeModal = () => {
-    // setIsModalAddOpen(false);
-    setIsModalEditOpen(false);
-  };
-
-  // modal edit
-  const handleModalEdit = (productId: string) => {
-    setIsModalEditOpen(true);
-    setSelectedProductId(productId);
-  };
-
   return (
     <>
       <Layout>
@@ -99,51 +151,144 @@ const Product = () => {
           isModalEditOpen={isModalEditOpen}
           closeModal={closeModal}
           produkId={selectedProductId}
+          setNotifEdit={setNotifEdit}
         />
+
+        <ModalDeleteProduct
+          isModalDeleteOpen={isModalDeleteOpen}
+          closeModal={closeModal}
+          productId={selectedProductId}
+          setNotifDanger={setNotifDanger}
+        />
+
+        <ModalViewProduct
+          isModalViewOpen={isModalViewOpen}
+          closeModal={closeModal}
+          productId={selectedProductId}
+        />
+
+        {/* notif delete */}
+        {notifDanger && (
+          <div className="fixed bottom-10 right-10 rounded-md bg-red-500 px-8 py-4 text-white 
+          opacity-100 transition-opacity duration-500 ease-in-out">
+            Product Deleted Successfully
+          </div>
+        )}
+
+        {/* notif edit */}
+        {notifEdit && (
+          <div className="fixed bottom-10 right-10 rounded-md bg-green-500 px-8 py-4 text-white 
+          opacity-100 transition-opacity duration-500 ease-in-out">
+            Product Edited Successfully
+          </div>
+        )}
+
+        {/* notif tambah */}
+        {notifAdd && (
+          <div className="fixed bottom-10 right-10 rounded-md bg-green-500 px-8 py-4 text-white 
+          opacity-100 transition-opacity duration-500 ease-in-out">
+            Product Added Successfully
+          </div>
+        )}
+
 
         <div className="h-screen pt-10">
           <div className="flex items-center justify-between pb-8">
             <h1 className="text-3xl font-semibold">Product</h1>
-          </div>
 
-          <div className="rounded-md bg-white p-8 shadow-sm">
+            <ModalAddProduct
+              setNotifAdd={setNotifAdd}
+            />
+
+          </div>
+          <div className="rounded-md bg-white px-6 py-3 pb-6 shadow-sm">
+
+            {/* bulk action */}
+            {selectedBulkDelete.length > 0 && (
+              <div className="mt-2">
+                <button
+                  onClick={() => handleBulkSelected(selectedBulkDelete)}
+                  className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                >
+                  Delete Selected ({selectedBulkDelete.length})
+                </button>
+
+              </div>
+            )}
+
             <table className="mt-6 w-full rounded-xl">
               <thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className="bg-gray-100 hover:bg-gray-100">
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        onClick={header.column.getToggleSortingHandler()} // ✅ Tambahkan handler sorting
-                        className="border-b border-gray-300 px-2 py-4 text-center">
-
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {header.column.getIsSorted() === "asc" ? " 🔼" : header.column.getIsSorted() === "desc" ? " 🔽" : ""}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
+                <tr className="bg-gray-100 hover:bg-gray-100">
+                  <th className="border-b border-gray-300 px-1 py-4 text-center">
+                    <input
+                      onChange={() => {
+                        if (selectedBulkDelete.length === products?.length) {
+                          setSelectedBulkDelete([]);
+                        } else {
+                          setSelectedBulkDelete(products?.map((product) => product.id));
+                        }
+                      }}
+                      checked={selectedBulkDelete.length === products?.length}
+                      type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                  </th>
+                  <th className="border-b border-gray-300 px-2 py-4 text-center">
+                    No
+                  </th>
+                  <th className="border-b border-gray-300 px-2 py-4 text-start">
+                    Name
+                  </th>
+                  <th className="border-b border-gray-300 px-2 py-4 text-start">
+                    Stock
+                  </th>
+                  <th className="border-b border-gray-300 px-2 py-4 text-start">
+                    Action
+                  </th>
+                </tr>
               </thead>
               <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-100">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="border-b border-gray-300 px-2 py-4 text-center">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ))}
+                {products?.map((product, index) => (
+                  <tr key={index} className="hover:bg-gray-100">
+
+                    {/* bulk delete */}
+                    <td className="border-b border-gray-300 px-1 py-4 text-center">
+                      <input
+                        onChange={() => handleBulkInput(String(product.id))}
+                        checked={selectedBulkDelete.includes(String(product.id))}
+                        type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                    </td>
+
+                    <td className="border-b border-gray-300 px-2 py-4 text-center">
+                      {index + 1}
+                    </td>
+                    <td className="border-b border-gray-300 px-2 py-4">
+                      {product.name}
+                    </td>
+                    <td className="border-b border-gray-300 px-2 py-4">
+                      {product.stock}
+                    </td>
+                    <td className="flex gap-2 border-b border-gray-300 px-2 py-4">
+
+                      {/* view eye */}
+                      <button onClick={() => handleModalView(String(product.id))} className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
+                        <LuEye size={18} />
+                      </button>
+
+                      <button onClick={() => handleModalEdit(String(product.id))} className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
+                        <LuPencil />
+                      </button>
+                      <button onClick={() => handleDeleteSEdit(String(product.id))} className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
+                        <FaRegTrashAlt />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
-
-
       </Layout>
     </>
-  )
-
+  );
 };
 
 export default Product;

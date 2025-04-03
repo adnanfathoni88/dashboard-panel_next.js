@@ -7,7 +7,11 @@ import { useState } from "react";
 import { useAddProducts } from "~/hooks/useProducts";
 import { ProductSchema } from "~/types/products";
 
-const ModalAddProduct = () => {
+const ModalAddProduct = ({
+  setNotifAdd,
+}: {
+  setNotifAdd: (value: boolean) => void;
+}) => {
   const [product, setProduct] = React.useState({
     name: "",
     description: "",
@@ -49,6 +53,7 @@ const ModalAddProduct = () => {
       setIsSubmitting(true);
 
       addProductMutate(product);
+      setNotifAdd(true);
 
       setIsSubmitting(false);
 
@@ -86,10 +91,8 @@ const ModalAddProduct = () => {
       {/* modal */}
       {isModalAddOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-          <div className="w-1/3 rounded-md bg-white p-10">
-            {/* {error && (
-          <pre className="whitespace-pre-wrap text-red-500">{error}</pre>
-        )} */}
+          <div className="w-1/3 rounded-md bg-white p-8">
+
             <div className="flex items-center justify-between">
               <h4 className="text-xl font-semibold">Add Product</h4>
               <button
@@ -102,7 +105,7 @@ const ModalAddProduct = () => {
 
             {/* error massge */}
             {Array.isArray(errors) && errors.length > 0 && (
-              <div className="mt-4 flex flex-col gap-1 rounded-md bg-red-100 p-4 px-4 py-2 text-red-500">
+              <div className="mt-4 flex flex-col gap-1 rounded-md bg-red-100 p-4 px-4 py-2 text-sm text-red-500">
                 {errors.map((e, index) => (
                   <span key={index}>{e}</span>
                 ))}

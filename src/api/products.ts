@@ -60,3 +60,10 @@ export const updateProduct = async ({
     }
   }
 };
+
+// delete
+export const deleteProduct = async (id: string): Promise<string> => {
+  const response = await axios.delete(`${API_URL}/api/products/${id}`);
+  return response.data as string;
+};
+
