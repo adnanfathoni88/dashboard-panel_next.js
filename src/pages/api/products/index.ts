@@ -10,7 +10,11 @@ export default async function handler(
   // get products
   if (req.method === "GET") {
     try {
-      const products = await prisma.product.findMany();
+      const products = await prisma.product.findMany({
+        orderBy: {
+          id: "asc",
+        },
+      });
       res.status(200).json(products);
     } catch (e) {
       res.status(500).json({ error: "API - Error fetching products" });

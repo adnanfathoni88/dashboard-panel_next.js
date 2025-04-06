@@ -2,23 +2,32 @@
 
 import React from "react";
 import { useState } from "react";
-import { useDeleteProduct, useProductById } from "~/hooks/useProducts";
+import { useDeleteProduct, useProductById, useProducts } from "~/hooks/useProducts";
 
 const ModalDeleteProduct = ({
     isModalDeleteOpen,
     closeModal,
     productId,
-    setNotifDanger
+    setNotifDanger,
+    selectedBulkDelete,
+    setSelectedBulkDelete,
 }: {
     isModalDeleteOpen: boolean;
     closeModal: () => void;
     productId: string;
     setNotifDanger: (value: boolean) => void;
+    selectedBulkDelete?: string[];
+    setSelectedBulkDelete: (value: string[]) => void;
 }) => {
+    const {
+        data: products,
+        isLoading: isProductsLoading,
+        error: isProductsError,
+    } = useProducts();
     const { data: productById, isLoading } = useProductById(productId);
     const { mutate: deleteProduct } = useDeleteProduct();
 
-    // handle delete product
+    // handle single delete
     const handleDeleteProduct = (productId: string) => {
         try {
             deleteProduct(productId);
@@ -30,6 +39,39 @@ const ModalDeleteProduct = ({
             setNotifDanger(false);
         }
     };
+
+    // handle bulk delete
+    const handleBulkDelete = () => {
+        try {
+            (selectedBulkDelete ?? []).forEach(async (productId) => {
+                const isFound = products?.find((product: { id: string; }) => product.id === productId);
+                if (isFound) {
+
+                    try {
+                        await deleteProduct(productId);
+                        setNotifDanger(true);
+                    } catch (error) {
+                        console.error("Failed to delete product:", error);
+                        alert("Failed to delete product. Please try again.");
+                        setNotifDanger(false);
+                    }
+                } else {
+                    console.error("Product not found:", productId);
+                }
+                if (!isFound) {
+                    throw new Error("Product not found");
+                }
+            });
+        }
+        catch (error) {
+            console.error(error);
+            return;
+        }
+        finally {
+            setSelectedBulkDelete([]); // Clear the selected IDs after deletion
+        }
+    }
+
 
     if (!isModalDeleteOpen) return null;
 
@@ -50,7 +92,15 @@ const ModalDeleteProduct = ({
                         <p className="text-sm text-gray-500">This action cannot be undone.</p>
                         <div className="flex gap-2">
                             <button
-                                onClick={() => handleDeleteProduct(productId)}
+                                onClick=
+                                {() => {
+                                    if (selectedBulkDelete && selectedBulkDelete.length > 0) {
+                                        handleBulkDelete();
+                                    } else {
+                                        handleDeleteProduct(productId);
+                                    }
+                                    closeModal();
+                                }}
                                 className="mt-4 rounded-md bg-red-500 px-6 py-2 text-white hover:bg-red-600"
                             >Yes</button>
                             <button
@@ -60,7 +110,7 @@ const ModalDeleteProduct = ({
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 };

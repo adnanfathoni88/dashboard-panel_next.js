@@ -13,7 +13,7 @@ export const useProducts = () => {
 // get product by id
 export const useProductById = (id: string) => {
   return useQuery({
-    queryKey: ["products", id],
+    queryKey: ["product", id],
     queryFn: () => getProductById(id),
   });
 }

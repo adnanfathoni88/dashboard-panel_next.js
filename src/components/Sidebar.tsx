@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useState } from "react";
 import { FiGrid } from "react-icons/fi";
 import { MdOutlineCameraAlt } from "react-icons/md";
@@ -6,8 +7,8 @@ const Sidebar = () => {
   const [activeMenu, setActiveMenu] = useState("dashboard");
 
   const menuItems = [
-    { id: "dashboard", icon: <FiGrid className="mr-4" />, label: "Dashboard" },
-    { id: "product", icon: <MdOutlineCameraAlt className="mr-4" />, label: "Product" },
+    { id: "category", icon: <FiGrid size={18} className="mr-4" />, label: "Category", link: "/category" },
+    { id: "product", icon: <MdOutlineCameraAlt size={18} className="mr-4" />, label: "Product", link: "/product" },
   ];
 
   return (
@@ -19,15 +20,16 @@ const Sidebar = () => {
       </div>
       <div className="flex flex-col gap-1 py-8">
         {menuItems.map((item) => (
-          <button
+          <Link
             key={item.id}
+            href={item.link}
+            className={`flex items-center rounded-md px-6 py-4 text-sm font-semibold hover:bg-dark-100 ${activeMenu === item.id ? "bg-dark-100" : ""}`}
             onClick={() => setActiveMenu(item.id)}
-            className={`text-md flex w-full items-center rounded-lg px-8 py-4 text-start transition ${activeMenu === item.id ? "bg-blue-800/25 text-white" : "text-white/75 hover:bg-dark-100"
-              }`}
           >
             {item.icon}
-            {item.label}
-          </button>
+            <span className="text-start font-normal text-lg opacity-75">{item.label}</span>
+          </Link>
+
         ))}
       </div>
     </div>

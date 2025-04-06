@@ -12,6 +12,9 @@ import ModalAddProduct from "~/components/product/ModalAddProduct";
 import ModalEditProduct from "~/components/product/ModalEditProduct";
 import ModalDeleteProduct from "~/components/product/ModalDeleteProduct";
 import ModalViewProduct from "~/components/product/ModalViewProduct";
+import ModalFormProduct from "~/components/product/ModalFormProduct";
+import { set } from "zod";
+import NotificationToast from "~/components/global/NotificationToast";
 
 const Product = () => {
   const {
@@ -21,6 +24,7 @@ const Product = () => {
   } = useProducts();
 
   // modal
+  const [isModalForm, setIsModalForm] = useState('');
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
   const [isModalEditOpen, setIsModalEditOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
@@ -30,7 +34,7 @@ const Product = () => {
   // notif
   const [notifDanger, setNotifDanger] = useState(false);
   const [notifEdit, setNotifEdit] = useState(false);
-  const [notifAdd, setNotifAdd] = useState(false);
+  const [notif, setNotif] = useState('');
 
   // bulk delete
   const [selectedBulkDelete, setSelectedBulkDelete] = useState<string[]>([]);
@@ -38,41 +42,23 @@ const Product = () => {
   // mutate 
   const { mutate: deleteProduct } = useDeleteProduct();
 
-  // alert timer
-  useEffect(() => {
-    if (notifDanger || notifEdit || notifAdd) {
-      const timer = setTimeout(() => {
-        setNotifDanger(false);
-        setNotifEdit(false);
-        setNotifAdd(false);
-      }, 4000);
-
-      return () => clearTimeout(timer); // Cleanup the timer on unmount
-    }
-  }, [notifDanger, notifEdit, notifAdd]);
-
-
-  // open modal
-  // const openModal = () => {
-  //   setIsModalAddOpen(true);
-  // };
-
   // close modal
   const closeModal = () => {
-    // setIsModalAddOpen(false);
+    setIsModalForm('');
     setIsModalEditOpen(false);
     setIsModalDeleteOpen(false);
     setIsModalViewOpen(false);
+    setSelectedProductId('');
   };
 
-  // modal edit
-  const handleModalEdit = (productId: string) => {
-    setIsModalEditOpen(true);
-    setSelectedProductId(productId);
+  // modal form
+  const handleModalForm = (type: string, productId?: string) => {
+    setSelectedProductId(productId || '');
+    setIsModalForm(type);
   };
 
   // modal delete
-  const handleDeleteSEdit = (productId: string) => {
+  const handleModalDelete = (productId: string) => {
     setIsModalDeleteOpen(true);
     setSelectedProductId(productId);
   };
@@ -97,35 +83,55 @@ const Product = () => {
   // handleBulkSelected
   const handleBulkSelected = (productIds: string[]) => {
 
-    try {
-      productIds.forEach((productId) => {
-        const isFound = products?.find((product) => product.id === productId);
-        if (isFound) {
+    setIsModalDeleteOpen(true);
 
-          try {
-            deleteProduct(productId);
-            setNotifDanger(true);
-          } catch (error) {
-            console.error("Failed to delete product:", error);
-            alert("Failed to delete product. Please try again.");
-            setNotifDanger(false);
-          }
-        } else {
-          console.error("Product not found:", productId);
-        }
-        if (!isFound) {
-          throw new Error("Product not found");
-        }
-      });
-    }
-    catch (error) {
-      console.error(error);
-      return;
-    }
-    finally {
-      setSelectedBulkDelete([]); // Clear the selected IDs after deletion
-    }
+
+    // try {
+    //   productIds.forEach(async (productId) => {
+    //     const isFound = products?.find((product) => product.id === productId);
+    //     if (isFound) {
+
+    //       try {
+    //         await deleteProduct(productId);
+    //         setNotifDanger(true);
+    //       } catch (error) {
+    //         console.error("Failed to delete product:", error);
+    //         alert("Failed to delete product. Please try again.");
+    //         setNotifDanger(false);
+    //       }
+    //     } else {
+    //       console.error("Product not found:", productId);
+    //     }
+    //     if (!isFound) {
+    //       throw new Error("Product not found");
+    //     }
+    //   });
+    // }
+    // catch (error) {
+    //   console.error(error);
+    //   return;
+    // }
+    // finally {
+    //   setSelectedBulkDelete([]); // Clear the selected IDs after deletion
+    // }
   };
+
+  // console.log(notifDanger, 'notif delete');
+  console.log(notif, 'notif form');
+
+
+  useEffect(() => {
+    if (notifDanger || notif === 'add' || notif === 'edit') {
+      const timer = setTimeout(() => {
+        setNotifDanger(false); // reset supaya bisa muncul lagi nanti
+        setNotif(''); // reset supaya bisa muncul lagi nanti
+      }, 3000); // bisa lebih tinggi tergantung durasi animasi toast
+
+      return () => clearTimeout(timer);
+    }
+  }, [notifDanger, notif]);
+
+
 
   // is error
   if (isProductsError instanceof Error)
@@ -147,11 +153,12 @@ const Product = () => {
     <>
       <Layout>
 
-        <ModalEditProduct
-          isModalEditOpen={isModalEditOpen}
+        {/* modal form */}
+        <ModalFormProduct
+          isModalForm={isModalForm}
           closeModal={closeModal}
           produkId={selectedProductId}
-          setNotifEdit={setNotifEdit}
+          setNotif={setNotif}
         />
 
         <ModalDeleteProduct
@@ -159,6 +166,9 @@ const Product = () => {
           closeModal={closeModal}
           productId={selectedProductId}
           setNotifDanger={setNotifDanger}
+          selectedBulkDelete={selectedBulkDelete}
+          setSelectedBulkDelete={setSelectedBulkDelete}
+
         />
 
         <ModalViewProduct
@@ -169,26 +179,25 @@ const Product = () => {
 
         {/* notif delete */}
         {notifDanger && (
-          <div className="fixed bottom-10 right-10 rounded-md bg-red-500 px-8 py-4 text-white 
-          opacity-100 transition-opacity duration-500 ease-in-out">
-            Product Deleted Successfully
-          </div>
-        )}
-
-        {/* notif edit */}
-        {notifEdit && (
-          <div className="fixed bottom-10 right-10 rounded-md bg-green-500 px-8 py-4 text-white 
-          opacity-100 transition-opacity duration-500 ease-in-out">
-            Product Edited Successfully
-          </div>
+          <NotificationToast
+            type="error"
+            message="Product deleted successfully!"
+          />
         )}
 
         {/* notif tambah */}
-        {notifAdd && (
-          <div className="fixed bottom-10 right-10 rounded-md bg-green-500 px-8 py-4 text-white 
-          opacity-100 transition-opacity duration-500 ease-in-out">
-            Product Added Successfully
-          </div>
+        {notif === 'add' && (
+          <NotificationToast
+            type="success"
+            message="Product added successfully!"
+          />
+        )}
+
+        {notif === 'edit' && (
+          <NotificationToast
+            type="success"
+            message="Product edited successfully!"
+          />
         )}
 
 
@@ -196,9 +205,9 @@ const Product = () => {
           <div className="flex items-center justify-between pb-8">
             <h1 className="text-3xl font-semibold">Product</h1>
 
-            <ModalAddProduct
-              setNotifAdd={setNotifAdd}
-            />
+            <button onClick={() => handleModalForm('add')} className="rounded bg-blue-600 px-8 py-2 font-bold text-white hover:bg-blue-700">
+              Add
+            </button>
 
           </div>
           <div className="rounded-md bg-white px-6 py-3 pb-6 shadow-sm">
@@ -225,7 +234,7 @@ const Product = () => {
                         if (selectedBulkDelete.length === products?.length) {
                           setSelectedBulkDelete([]);
                         } else {
-                          setSelectedBulkDelete(products?.map((product) => product.id));
+                          setSelectedBulkDelete(products?.map((product: { id: string; }) => product.id));
                         }
                       }}
                       checked={selectedBulkDelete.length === products?.length}
@@ -272,11 +281,10 @@ const Product = () => {
                       <button onClick={() => handleModalView(String(product.id))} className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
                         <LuEye size={18} />
                       </button>
-
-                      <button onClick={() => handleModalEdit(String(product.id))} className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
+                      <button onClick={() => handleModalForm("edit", String(product.id))} className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
                         <LuPencil />
                       </button>
-                      <button onClick={() => handleDeleteSEdit(String(product.id))} className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
+                      <button onClick={() => handleModalDelete(String(product.id))} className="hover:bg-slate-2010 rounded px-4 py-2 font-bold text-slate-800 hover:bg-slate-200">
                         <FaRegTrashAlt />
                       </button>
                     </td>
